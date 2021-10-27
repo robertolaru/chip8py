@@ -1,5 +1,6 @@
 import random
 import constants
+import pygame
 
 
 class CPU:
@@ -8,8 +9,7 @@ class CPU:
         self.memory = bytearray(constants.MEMORY_SIZE)
         self.display = bytearray(constants.DISPLAY_SIZE)
 
-        # TODO: implement key press events
-        self.key = 0x0
+        self.key = None
 
         # Create registers
         self.v = [0x0 for i in range(16)]
@@ -27,6 +27,26 @@ class CPU:
 
         # Draw flag
         self.draw_flag = False
+
+        # Keys
+        self.KEYS = {
+            pygame.K_1: 0x1,
+            pygame.K_2: 0x2,
+            pygame.K_3: 0x3,
+            pygame.K_4: 0xc,
+            pygame.K_q: 0x4,
+            pygame.K_w: 0x5,
+            pygame.K_e: 0x6,
+            pygame.K_r: 0xd,
+            pygame.K_a: 0x7,
+            pygame.K_s: 0x8,
+            pygame.K_d: 0x9,
+            pygame.K_f: 0xe,
+            pygame.K_z: 0xa,
+            pygame.K_x: 0x0,
+            pygame.K_c: 0xb,
+            pygame.K_v: 0xf
+        }
 
         # Opcodes
         self.CODES = (
@@ -129,6 +149,19 @@ class CPU:
                 if all_match:
                     function()
                     break
+
+    def __get_key(self, halt=False):
+        key_acquired = False
+        while (not key_acquired):
+            events = pygame.event.get()
+            if events != []:
+                for event in events:
+                    if event.type == pygame.KEYDOWN:
+                        key_acquired = True
+                        key = self.KEYS.get(event.key)
+                        self.key = key
+            if not halt:
+                break
 
     # Methods to fetch values from opcodes, depending on opcode pattern
 
@@ -293,11 +326,13 @@ class CPU:
         self.draw_flag = True
 
     def skip_key_pressed(self):
+        self.__get_key(halt=False)
         vx = self.get_reg()
         if self.key == self.v[vx]:
             self.skip()
 
     def skip_key_not_pressed(self):
+        self.__get_key(halt=False)
         vx = self.get_reg()
         if self.key != self.v[vx]:
             self.skip()
@@ -307,7 +342,9 @@ class CPU:
         self.v[vx] = self.delay_timer
 
     def get_key(self):
-        # TODO: await key event
+        self.__get_key(halt=True)
+        vx = self.get_reg()
+        self.v[vx] = self.key
         pass
 
     def set_delay(self):
