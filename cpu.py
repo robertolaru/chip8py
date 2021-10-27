@@ -345,7 +345,6 @@ class CPU:
         self.__get_key(halt=True)
         vx = self.get_reg()
         self.v[vx] = self.key
-        pass
 
     def set_delay(self):
         vx = self.get_reg()
