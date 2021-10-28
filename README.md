@@ -34,13 +34,31 @@ git clone https://github.com/robertolaru/chip8py.git
 
 ## Usage
 
-To run the program, you need to provide the path to the rom file to load in the interpreter:
+Running `python3 main.py --help` will provide the list of arguments the program supports:
 
 ```
-python main.py /path/to/file
+usage: main.py [-h] [--cps CPS] [--fps FPS] [-c] [-m] program
+
+positional arguments:
+  program            Path to the program to load
+
+optional arguments:
+  -h, --help         show this help message and exit
+  --cps CPS          Cycles per second. Default is 500 cps
+  --fps FPS          Window rendering framerate. Default is 30 fps
+  -c, --cpu-view     Enable visualization of CPU registers, stack, opcodes
+  -m, --memory-view  Enable memory visualization. Also enables CPU visualization (like --cpu-view)
 ```
 
-Originally, user input was done through a 16-key hex keyboard.
+To run the program, you need to provide the path to the rom file (`program`) to load in the interpreter:
+
+```
+python main.py program
+```
+
+### Using the keyboard
+
+Originally, user input on CHIP-8 was done through a 16-key hex keyboard.
 
 The interpreter maps the original keys to the leftmost portion of QWERTY keyboards:
 
