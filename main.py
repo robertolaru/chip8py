@@ -106,12 +106,6 @@ if __name__ == "__main__":
     while(True):
         try:
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    print("Quitting...")
-                    pygame.quit()
-                    sys.exit()
-
             _cpu.cycle()
 
             # Decrement timers at 60 Hz
