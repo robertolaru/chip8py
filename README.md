@@ -34,7 +34,7 @@ git clone https://github.com/robertolaru/chip8py.git
 
 ## Usage
 
-Running `python3 main.py --help` will provide the list of arguments the program supports:
+Running `python main.py --help` will provide the list of arguments the program supports:
 
 ```
 usage: main.py [-h] [--cps CPS] [--fps FPS] [-c] [-m] program
