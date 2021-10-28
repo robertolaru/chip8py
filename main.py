@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
         # fps_timer reaches CYCLES_PER_SECOND roughly every second,
         # so it works approximately well for timing
-        if fps_timer == CYCLES_PER_SECOND // FRAMES_PER_SECOND:
+        if fps_timer >= CYCLES_PER_SECOND // FRAMES_PER_SECOND:
 
             fps_timer = 0
 
