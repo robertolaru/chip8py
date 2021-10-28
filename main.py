@@ -1,6 +1,5 @@
 from cpu import CPU
 import constants
-import sys
 import pygame
 import time
 import argparse
