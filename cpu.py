@@ -151,7 +151,7 @@ class CPU:
                     function()
                     break
 
-    def __get_key_and_events(self, halt=False):
+    def get_key_and_events(self, halt=False):
         key_acquired = False
         while (not key_acquired):
             events = pygame.event.get()
@@ -165,6 +165,8 @@ class CPU:
                         print("Quitting...")
                         pygame.quit()
                         sys.exit()
+                if not key_acquired:
+                    self.key = None
             if not halt:
                 break
 
@@ -331,13 +333,13 @@ class CPU:
         self.draw_flag = True
 
     def skip_key_pressed(self):
-        self.__get_key_and_events(halt=False)
+        self.get_key_and_events(halt=False)
         vx = self.get_reg()
         if self.key == self.v[vx]:
             self.skip()
 
     def skip_key_not_pressed(self):
-        self.__get_key_and_events(halt=False)
+        self.get_key_and_events(halt=False)
         vx = self.get_reg()
         if self.key != self.v[vx]:
             self.skip()
@@ -347,7 +349,7 @@ class CPU:
         self.v[vx] = self.delay_timer
 
     def get_key(self):
-        self.__get_key_and_events(halt=True)
+        self.get_key_and_events(halt=True)
         vx = self.get_reg()
         self.v[vx] = self.key
 

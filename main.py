@@ -141,6 +141,8 @@ if __name__ == "__main__":
 
             fps_timer = 0
 
+            _cpu.get_key_and_events(halt=False)
+
             # Draw CHIP-8 screen
             # Clear previous CHIP-8 frame
             clear_viewport(screen)
