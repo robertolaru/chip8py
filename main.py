@@ -3,6 +3,7 @@ import constants
 import sys
 import pygame
 import time
+import argparse
 
 
 def show_info(cpu, cycle):
@@ -45,14 +46,50 @@ def compute_byte_coords(b):
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("program", type=str,
+                        help="Path to the program to load")
+    parser.add_argument("--cps", type=int,
+                        help=f"Cycles per second. Default is {constants.CYCLES_PER_SECOND} cps")
+    parser.add_argument("--fps", type=int,
+                        help=f"Window rendering framerate. Default is {constants.FRAMES_PER_SECOND} fps")
+    parser.add_argument("-c", "--cpu-view", help="Enable visualization of CPU registers, stack, opcodes",
+                        action="store_true")
+    parser.add_argument("-m", "--memory-view",
+                        help="Enable memory visualization. Also enables CPU visualization (like --cpu-view)",
+                        action="store_true")
+    args = parser.parse_args()
+
+    # Use args
+    BIN_PATH = args.program
+    if args.cps:
+        CYCLES_PER_SECOND = args.cps
+    else:
+        CYCLES_PER_SECOND = constants.CYCLES_PER_SECOND
+
+    if args.fps:
+        FRAMES_PER_SECOND = args.fps
+    else:
+        FRAMES_PER_SECOND = constants.FRAMES_PER_SECOND
+
+    # Set width based on args
+    if args.memory_view:
+        WIDTH = constants.WIDTH
+        HEIGHT = constants.HEIGHT
+    elif args.cpu_view:
+        WIDTH = constants.DISPLAY_W_SCALED
+        HEIGHT = constants.HEIGHT
+    else:
+        WIDTH = constants.DISPLAY_W_SCALED
+        HEIGHT = constants.DISPLAY_H_SCALED
+
     pygame.init()
     pygame.font.init()
     screen = pygame.display.set_mode(
-        (constants.WIDTH, constants.HEIGHT))
+        (WIDTH, HEIGHT))
     font = pygame.font.SysFont("Courier New", 10, bold=True)
     beep = pygame.mixer.Sound("beep.wav")
 
-    BIN_PATH = sys.argv[1]
     BIN = open(BIN_PATH, "rb").read()
     _cpu = CPU()
     _cpu.load_bin(BIN)
@@ -68,6 +105,13 @@ if __name__ == "__main__":
 
     while(True):
         try:
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    print("Quitting...")
+                    pygame.quit()
+                    sys.exit()
+
             _cpu.cycle()
 
             # Decrement timers at 60 Hz
@@ -99,7 +143,7 @@ if __name__ == "__main__":
 
         # fps_timer reaches CYCLES_PER_SECOND roughly every second,
         # so it works approximately well for timing
-        if fps_timer == constants.CYCLES_PER_SECOND // constants.FRAMES_PER_SECOND:
+        if fps_timer == CYCLES_PER_SECOND // FRAMES_PER_SECOND:
 
             fps_timer = 0
 
@@ -119,45 +163,48 @@ if __name__ == "__main__":
             if len(last_opcodes) > constants.MAX_OPCODE_LIST_LENGTH:
                 last_opcodes.pop()
 
-            # Render memory view
-            # Cover previous memory view
-            pygame.draw.rect(
-                screen, constants.GRAY,
-                (constants.DISPLAY_W_SCALED,
-                 0, constants.WIDTH, constants.HEIGHT)
-            )
+            if args.memory_view:
+                # Render memory view
+                # Cover previous memory view
+                pygame.draw.rect(
+                    screen, constants.GRAY,
+                    (constants.DISPLAY_W_SCALED,
+                     0, WIDTH, HEIGHT)
+                )
 
-            # Highlight PC position on memory
-            w, h = compute_byte_coords(_cpu.pc)
-            pygame.draw.rect(
-                screen, constants.GREEN,
-                (w, h, 2 * constants.DEBUGGER_SCALING, constants.DEBUGGER_SCALING)
-            )
+                # Highlight PC position on memory
+                w, h = compute_byte_coords(_cpu.pc)
+                pygame.draw.rect(
+                    screen, constants.GREEN,
+                    (w, h, 2 * constants.DEBUGGER_SCALING,
+                     constants.DEBUGGER_SCALING)
+                )
 
-            for i in range(constants.MEMORY_SIZE):
-                font_surface = font.render(
-                    ("%x" % _cpu.memory[i]).zfill(2),
-                    True, constants.WHITE)
-                screen.blit(font_surface, compute_byte_coords(i))
+                for i in range(constants.MEMORY_SIZE):
+                    font_surface = font.render(
+                        ("%x" % _cpu.memory[i]).zfill(2),
+                        True, constants.WHITE)
+                    screen.blit(font_surface, compute_byte_coords(i))
 
-            # Render registers and stack
-            # Cover previous registers view
-            pygame.draw.rect(
-                screen, constants.GRAY,
-                (0, constants.DISPLAY_H_SCALED, constants.DISPLAY_W_SCALED, constants.DEBUGGER_HEIGHT))
+            if args.cpu_view:
+                # Render registers and stack
+                # Cover previous registers view
+                pygame.draw.rect(
+                    screen, constants.GRAY,
+                    (0, constants.DISPLAY_H_SCALED, constants.DISPLAY_W_SCALED, constants.DEBUGGER_HEIGHT))
 
-            x_pos = constants.FIRST_LINE_X_POS
-            n_lines_return = 0
-            for i, line in enumerate(show_info(_cpu, cycle)):
-                font_surface = font.render(
-                    line, True, constants.WHITE)
-                if line.startswith("OPCODES") and x_pos == constants.FIRST_LINE_X_POS:
-                    x_pos = constants.SECOND_LINE_X_POS
-                    n_lines_return = i
-                screen.blit(
-                    font_surface, (x_pos, constants.DISPLAY_H_SCALED + (i - n_lines_return) * constants.DEBUGGER_SCALING))
+                x_pos = constants.FIRST_LINE_X_POS
+                n_lines_return = 0
+                for i, line in enumerate(show_info(_cpu, cycle)):
+                    font_surface = font.render(
+                        line, True, constants.WHITE)
+                    if line.startswith("OPCODES") and x_pos == constants.FIRST_LINE_X_POS:
+                        x_pos = constants.SECOND_LINE_X_POS
+                        n_lines_return = i
+                    screen.blit(
+                        font_surface, (x_pos, constants.DISPLAY_H_SCALED + (i - n_lines_return) * constants.DEBUGGER_SCALING))
 
             # Show rendered frame
             pygame.display.flip()
 
-        time.sleep(1/constants.CYCLES_PER_SECOND)
+        time.sleep(1/CYCLES_PER_SECOND)
