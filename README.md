@@ -1,7 +1,7 @@
 # chip8py
 
 <div align="center">
-<img style="width: 50%; image-rendering: pixelated; margin: 0 auto;" src="logo.PNG"></img>
+<img style="width: 50%; margin: 0 auto" src="logo_hd.PNG"></img>
 <p><i>CHIP-8 interpreter written in Python</i></p>
 </div>
 
