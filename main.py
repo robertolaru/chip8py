@@ -47,15 +47,15 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("program", type=str,
-                        help="Path to the program to load")
+                        help="path to the program to load")
     parser.add_argument("--cps", type=int,
-                        help=f"Cycles per second. Default is {constants.CYCLES_PER_SECOND} cps")
+                        help=f"cycles per second. Default is {constants.CYCLES_PER_SECOND} cps")
     parser.add_argument("--fps", type=int,
-                        help=f"Window rendering framerate. Default is {constants.FRAMES_PER_SECOND} fps")
-    parser.add_argument("-c", "--cpu-view", help="Enable visualization of CPU registers, stack, opcodes",
+                        help=f"window rendering framerate. Default is {constants.FRAMES_PER_SECOND} fps")
+    parser.add_argument("-c", "--cpu-view", help="enable visualization of CPU registers, stack, opcodes",
                         action="store_true")
     parser.add_argument("-m", "--memory-view",
-                        help="Enable memory visualization. Also enables CPU visualization (like --cpu-view)",
+                        help="enable memory visualization. Also enables CPU visualization (like --cpu-view)",
                         action="store_true")
     args = parser.parse_args()
 

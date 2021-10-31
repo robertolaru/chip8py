@@ -44,14 +44,14 @@ Running `python main.py --help` will provide the list of arguments the program s
 usage: main.py [-h] [--cps CPS] [--fps FPS] [-c] [-m] program
 
 positional arguments:
-  program            Path to the program to load
+  program            path to the program to load
 
 optional arguments:
   -h, --help         show this help message and exit
-  --cps CPS          Cycles per second. Default is 500 cps
-  --fps FPS          Window rendering framerate. Default is 30 fps
-  -c, --cpu-view     Enable visualization of CPU registers, stack, opcodes
-  -m, --memory-view  Enable memory visualization. Also enables CPU visualization (like --cpu-view)
+  --cps CPS          cycles per second. Default is 500 cps
+  --fps FPS          window rendering framerate. Default is 30 fps
+  -c, --cpu-view     enable visualization of CPU registers, stack, opcodes
+  -m, --memory-view  enable memory visualization. Also enables CPU visualization (like --cpu-view)
 ```
 
 To run the program, you need to provide the path to the rom file (`program`) to load in the interpreter:
