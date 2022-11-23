@@ -4,10 +4,10 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/robertolaru/chip8py?style=for-the-badge)
 ![Lines of code](https://img.shields.io/tokei/lines/github/robertolaru/chip8py?style=for-the-badge)
 
-<div align="center">
-<img style="width: 50%; margin: 0 auto" src="logo_hd.PNG"></img>
-<p><i>CHIP-8 interpreter written in Python</i></p>
-</div>
+<figure>
+  <img src="screenshot.png" alt="">
+  <figcaption>Screenshot of the CHIP-8 interpreter running Space Invaders, with visualization of CPU registers, stack, opcodes and memory</figcaption>
+</figure>
 
 ## Contents
 
